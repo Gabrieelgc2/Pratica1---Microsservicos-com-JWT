@@ -1,0 +1,29 @@
+http:
+  port: 8000
+
+apiEndpoints:
+  api:
+    path: /minha-rota
+    target: http://localhost:4000
+    methods: GET
+
+policies:
+  - proxy
+  - jwt
+
+pipelines:
+  default:
+    apiEndpoints:
+      - api
+    policies:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'MINHA_CHAVE_DE_ASSINATURA'
+              checkCredentialExists: false
+      - proxy:
+          - action:
+              serviceEndpoint: httpbin
+
+serviceEndpoints:
+  httpbin:
+    url: 'http://localhost:4000'
